@@ -1,5 +1,6 @@
 import pygame
 from displayboard import display_board
+from displaypieces import load_draw_pieces
 
 def main():
 
@@ -7,6 +8,7 @@ def main():
     screen = pygame.display.set_mode((800, 800))
     pygame.display.set_caption("SaltyyChess, First python project")
     display_board(screen)
+    load_draw_pieces(screen)
 
     running = True
     while running:
