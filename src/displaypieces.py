@@ -15,7 +15,7 @@ pieces_pos = [
 
 def load_draw_pieces(screen):
     SIZE = 100
-    piece_size = 45
+    piece_size = 80
     offset = (SIZE - piece_size) // 2
 
     current_file_path = os.path.abspath(__file__)
@@ -26,6 +26,7 @@ def load_draw_pieces(screen):
         image_path = os.path.join(pieces_path, pieces_name + ".png")
         try:
             piece_image = pygame.image.load(image_path).convert_alpha()
+            piece_image = pygame.transform.scale(piece_image,(piece_size, piece_size))
             pixel_pos = (pos[0] * SIZE + offset, pos[1] * SIZE + offset)
             screen.blit(piece_image, pixel_pos)
         except pygame.error as e:
