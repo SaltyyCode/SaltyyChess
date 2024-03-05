@@ -15,7 +15,7 @@ pieces_pos = [
 
 def load_draw_pieces(screen):
     SIZE = 100
-    piece_size = 80
+    piece_size = 60
     offset = (SIZE - piece_size) // 2
 
     current_file_path = os.path.abspath(__file__)
