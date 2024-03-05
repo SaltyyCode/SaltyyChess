@@ -1,6 +1,6 @@
 import pygame
 from displayboard import display_board
-from displaypieces import load_draw_pieces
+from displaypieces import *
 
 def main():
 
