@@ -1,12 +1,14 @@
 import pygame
 from displayboard import display_board
 from displaypieces import *
+from init_board import *
 
 def main():
 
     pygame.init()
     screen = pygame.display.set_mode((800, 800))
     pygame.display.set_caption("SaltyyChess, First python project")
+    chess_board = init_chessboard()
     display_board(screen)
     load_draw_pieces(screen)
 
