@@ -16,12 +16,12 @@ class GameState():
 
     def makeMove(self, move):
         
-        if not self.redoLog:  # S'assurer qu'il n'y a pas de coups en attente de redo
-            self.board[move.startRow][move.startCol] = '--'  # Enlève la pièce de la case de départ
-            self.board[move.endRow][move.endCol] = move.movedPiece  # Place la pièce à la case d'arrivée
-            self.moveLog.append(move)  # Ajoute le coup au journal des mouvements
-            self.whiteMove = not self.whiteMove  # Change le tour du joueur
-            self.redoLog.clear()  # Efface redoLog après un nouveau coup pour éviter les incohérences
+        if not self.redoLog:
+            self.board[move.startRow][move.startCol] = '--'
+            self.board[move.endRow][move.endCol] = move.movedPiece
+            self.moveLog.append(move) 
+            self.whiteMove = not self.whiteMove 
+            self.redoLog.clear()
         else:
             print("Un redo est disponible, vous ne pouvez pas faire un nouveau coup maintenant.")
     
@@ -61,4 +61,12 @@ class Move():
         self.endCol = endSquare[1]
         self.movedPiece = board[self.startRow][self.startCol]
         self.capturedPiece = board[self.endRow][self.endCol]
-         
+        self.moveID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol
+        print(self.moveID) 
+
+
+    def __eq__(self, other):
+
+        if isinstance(other, Move):
+            return self.moveID == other.moveID
+        return False
