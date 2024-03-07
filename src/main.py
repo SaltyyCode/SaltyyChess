@@ -42,6 +42,8 @@ def main():
     clock = p.time.Clock()
     screen.fill((255, 255, 255))
     gs = chess_board.GameState()
+    validMove = gs.getvalidMoves()
+    moveMade = False
     loadpng()
     running = True
     selectedsquare = ()
@@ -63,7 +65,9 @@ def main():
                     playerClick.append(selectedsquare)
                 if len(playerClick) == 2:
                     move = chess_board.Move(playerClick[0], playerClick[1], gs.board)
-                    gs.makeMove(move)
+                    if move in validMove:
+                        gs.makeMove(move)
+                        moveMade = True
                     selectedsquare = ()
                     playerClick = []
             elif e.type == p.KEYDOWN:
@@ -71,6 +75,10 @@ def main():
                     gs.undo()
                 elif e.key == p.K_RIGHT:
                     gs.redo()
+        
+        if moveMade:
+            validMove = gs.getvalidMoves()
+            moveMade = False
 
         boardpieces(screen, gs)
         clock.tick(FPS_MAX)
