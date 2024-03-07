@@ -12,6 +12,7 @@ class GameState():
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"],]
         self.whiteMove = True
         self.moveLog = []
+        self.redoLog = []
 
     def makeMove(self, move):
         
@@ -19,6 +20,7 @@ class GameState():
         self.board[move.endRow][move.endCol] = move.movedPiece
         self.moveLog.append(move)
         self.whiteMove = not self.whiteMove
+        self.redoLog.clear
     
     def undo(self):
         
@@ -27,6 +29,17 @@ class GameState():
             self.board[move.startRow][move.startCol] = move.movedPiece
             self.board[move.endRow][move.endCol] = move.capturedPiece
             self.whiteMove = not self.whiteMove
+            self.redoLog.append(move)
+    
+    def redo(self):
+
+        if self.redoLog:
+            move = self.redoLog.pop()
+            self.board[move.startRow][move.startCol] = '--'
+            self.board[move.endRow][move.endCol] = move.movedPiece
+            self.moveLog.append(move)
+            self.whiteMove = not self.whiteMove
+
 
 class Move():
 
