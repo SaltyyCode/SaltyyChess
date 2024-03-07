@@ -1,6 +1,6 @@
 import pygame as p
 import chess_board
-
+from draw_board_pieces import *
 WIDTH = HEIGHT = 800
 DIMENSION = 8
 SQUARE_SIZE = WIDTH // DIMENSION
@@ -18,9 +18,11 @@ def main():
     
     p.init()
     screen = p.display.set_mode((WIDTH, HEIGHT))
+    p.display.set_caption("SaltyyChess, First python project")
     clock = p.time.Clock()
     screen.fill((255, 255, 255))
     gs = chess_board.GameState()
+    drawboard(screen)
     #loadpng()
     print(gs.board)
     running = True
