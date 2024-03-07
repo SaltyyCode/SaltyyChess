@@ -69,6 +69,8 @@ def main():
             elif e.type == p.KEYDOWN:
                 if e.key == p.K_LEFT:
                     gs.undo()
+                elif e.key == p.K_RIGHT:
+                    gs.redo()
 
         boardpieces(screen, gs)
         clock.tick(FPS_MAX)
