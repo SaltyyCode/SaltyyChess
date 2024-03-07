@@ -4,15 +4,16 @@ class GameState():
         self.board = [
             ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
             ["bp", "bp", "bp", "bp", "bp", "bp", "bp", "bp"],
+            ["--", "--", "--", "--", "wp", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "bp", "--", "--", "--", "--"],
             ["wp", "wp", "wp", "wp", "wp", "wp", "wp", "wp"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"],]
         self.whiteMove = True
         self.moveLog = []
         self.redoLog = []
+        self.moveFunc = {'p': self.pawnMove} #adding later other moves
 
     def makeMove(self, move):
         
@@ -23,7 +24,7 @@ class GameState():
             self.whiteMove = not self.whiteMove 
             self.redoLog.clear()
         else:
-            print("Un redo est disponible, vous ne pouvez pas faire un nouveau coup maintenant.")
+            pass
     
     def undo(self):
 
@@ -45,6 +46,56 @@ class GameState():
             self.moveLog.append(move)
 
 
+    def getvalidMoves(self):
+
+        return self.getallMoves()
+    
+    def getallMoves(self):
+
+        moves = []
+
+        for r in range (len(self.board)):
+            for c in range (len(self.board[r])):
+                turn = self.board[r][c][0]
+                if (turn == 'w' and self.whiteMove) or (turn == 'b' and not self.whiteMove):
+                    piece = self.board[r][c][1]
+                    if piece == 'p': #for testing only
+                        self.pawnMove(r, c, moves)
+                    #self.moveFunc[piece](r, c, moves) instead of last if statement later
+        return moves
+
+
+    def pawnMove(self, r, c, moves):
+        if self.whiteMove:
+            if self.board[r-1][c] == "--":
+                moves.append(Move((r, c), (r-1, c), self.board))
+                if r == 6 and self.board[r-2][c] == '--':
+                    moves.append(Move((r, c), (r-2, c), self.board))
+            if c-1 >= 0:
+                if self.board[r-1][c-1][0] == 'b':
+                 moves.append(Move((r, c), (r-1, c-1), self.board))
+            if c+1 <= 7:
+                if self.board[r-1][c+1][0] == 'b':
+                    moves.append(Move((r, c), (r-1, c+1), self.board))
+        else:
+            if self.board[r+1][c] == "--":
+                moves.append(Move((r, c), (r+1, c), self.board))
+                if r == 1 and self.board[r+2][c] == '--':
+                    moves.append(Move((r, c), (r+2, c), self.board))
+            if c-1 >= 0:
+                if self.board[r+1][c-1][0] == 'w': 
+                    moves.append(Move((r, c), (r+1, c-1), self.board))
+            if c+1 <= 7:
+                if self.board[r+1][c+1][0] == 'w':  
+                    moves.append(Move((r, c), (r+1, c+1), self.board))
+    
+    def rookMoves(self, r, c, moves):
+        pass
+
+
+
+
+
 class Move():
 
     rankstoRow = {"1": 7, "2": 6, "3": 5, "4": 4,
@@ -62,7 +113,6 @@ class Move():
         self.movedPiece = board[self.startRow][self.startCol]
         self.capturedPiece = board[self.endRow][self.endCol]
         self.moveID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol
-        print(self.moveID) 
 
 
     def __eq__(self, other):
