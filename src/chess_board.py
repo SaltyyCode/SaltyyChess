@@ -63,6 +63,8 @@ class GameState():
                         self.pawnMove(r, c, moves)
                     if piece == 'R':
                         self.rookMove(r, c, moves)
+                    if piece == 'K':
+                        self.kingMove(r, c, moves)
                     #self.moveFunc[piece](r, c, moves) instead of last if statement later
         return moves
 
@@ -111,6 +113,20 @@ class GameState():
                         break
                 else :
                     break
+
+    def kingMove(self, r, c, moves):
+        directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+        opponentColor = "b" if self.whiteMove else "w"
+
+        for d in directions:
+            endRow = r + d[0]
+            endCol = c + d[1]
+            if 0 <= endRow < 8 and 0 <= endCol < 8:  # Assure que la case de destination est dans les limites du plateau
+                endPiece = self.board[endRow][endCol]
+            # Si la case de destination est vide ou contient une pièce adverse
+                if endPiece == "--" or endPiece[0] == opponentColor:
+                    moves.append(Move((r, c), (endRow, endCol), self.board))
+
 
 
 class Move():
