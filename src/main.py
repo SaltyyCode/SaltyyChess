@@ -66,6 +66,9 @@ def main():
                     gs.makeMove(move)
                     selectedsquare = ()
                     playerClick = []
+            elif e.type == p.KEYDOWN:
+                if e.key == p.K_LEFT:
+                    gs.undo()
 
         boardpieces(screen, gs)
         clock.tick(FPS_MAX)
