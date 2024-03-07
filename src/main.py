@@ -44,11 +44,29 @@ def main():
     gs = chess_board.GameState()
     loadpng()
     running = True
+    selectedsquare = ()
+    playerClick = []
 
     while running:
         for e in p.event.get():
             if e.type == p.QUIT:
                 running = False
+            elif e.type == p.MOUSEBUTTONDOWN:
+                location = p.mouse.get_pos()
+                col = location[0]//SQUARE_SIZE
+                row = location[1]//SQUARE_SIZE
+                if selectedsquare == (row, col):
+                    selectedsquare = ()
+                    playerClick = []
+                else:
+                    selectedsquare = (row, col)
+                    playerClick.append(selectedsquare)
+                if len(playerClick) == 2:
+                    move = chess_board.Move(playerClick[0], playerClick[1], gs.board)
+                    gs.makeMove(move)
+                    selectedsquare = ()
+                    playerClick = []
+
         boardpieces(screen, gs)
         clock.tick(FPS_MAX)
         p.display.flip()
