@@ -19,6 +19,14 @@ class GameState():
         self.board[move.endRow][move.endCol] = move.movedPiece
         self.moveLog.append(move)
         self.whiteMove = not self.whiteMove
+    
+    def undo(self):
+        
+        if len(self.moveLog) != 0:
+            move = self.moveLog.pop()
+            self.board[move.startRow][move.startCol] = move.movedPiece
+            self.board[move.endRow][move.endCol] = move.capturedPiece
+            self.whiteMove = not self.whiteMove
 
 class Move():
 
