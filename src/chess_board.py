@@ -61,6 +61,8 @@ class GameState():
                     piece = self.board[r][c][1]
                     if piece == 'p': #for testing only
                         self.pawnMove(r, c, moves)
+                    if piece == 'R':
+                        self.rookMove(r, c, moves)
                     #self.moveFunc[piece](r, c, moves) instead of last if statement later
         return moves
 
@@ -89,11 +91,26 @@ class GameState():
                 if self.board[r+1][c+1][0] == 'w':  
                     moves.append(Move((r, c), (r+1, c+1), self.board))
     
-    def rookMoves(self, r, c, moves):
-        pass
+    def rookMove(self, r, c, moves):
+        
+        dir = ((-1, 0), (0, -1), (1, 0), (0, 1))
+        othercolor = "b" if self.whiteMove else "w"
 
-
-
+        for d in dir:
+            for x in range(1, 8):
+                endRow = r + d[0] * x
+                endCol = c + d[1] * x
+                if 0 <= endRow < 8 and 0 <= endCol < 8:
+                    endPiece = self.board[endRow][endCol]
+                    if endPiece == '--':
+                        moves.append(Move((r, c), (endRow, endCol), self.board))
+                    elif endPiece[0] == othercolor:
+                        moves.append(Move((r, c), (endRow, endCol), self.board))
+                        break
+                    else:
+                        break
+                else :
+                    break
 
 
 class Move():
