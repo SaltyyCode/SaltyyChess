@@ -13,7 +13,9 @@ class GameState():
         self.whiteMove = True
         self.moveLog = []
         self.redoLog = []
-        self.moveFunc = {'p': self.pawnMove} #adding later other moves
+        self.moveFunc = {'p': self.pawnMove, 'N': self.knightMoves,
+                         'B': self.bishopMove, 'Q': self.queenMoves,
+                         'K': self.kingMove, 'R': self.rookMove}
 
     def makeMove(self, move):
         
@@ -59,17 +61,7 @@ class GameState():
                 turn = self.board[r][c][0]
                 if (turn == 'w' and self.whiteMove) or (turn == 'b' and not self.whiteMove):
                     piece = self.board[r][c][1]
-                    if piece == 'p': #for testing only
-                        self.pawnMove(r, c, moves)
-                    if piece == 'R':
-                        self.rookMove(r, c, moves)
-                    if piece == 'K':
-                        self.kingMove(r, c, moves)
-                    if piece == 'B':
-                        self.bishopMove(r, c, moves)
-                    if piece == 'Q':
-                        self.queenMoves(r, c, moves)
-                    #self.moveFunc[piece](r, c, moves) instead of last if statement later
+                    self.moveFunc[piece](r, c, moves)
         return moves
 
 
@@ -156,6 +148,22 @@ class GameState():
         
         self.bishopMove(r, c, moves)
         self.rookMove(r, c, moves)
+    
+    def knightMoves(self, r, c, moves):
+    
+        directions = [(-2, -1), (-2, 1), (-1, -2), (-1, 2), (1, -2), (1, 2), (2, -1), (2, 1)]
+        allyColor = "w" if self.whiteMove else "b"  # Utilisez la couleur alliée pour la vérification
+
+        for d in directions:
+            endRow = r + d[0]
+            endCol = c + d[1]
+            if 0 <= endRow < 8 and 0 <= endCol < 8:
+                endPiece = self.board[endRow][endCol]
+                if endPiece == "--" or endPiece[0] != allyColor:  # Case vide ou contient une pièce adverse
+                    moves.append(Move((r, c), (endRow, endCol), self.board))
+
+
+
 
 
 class Move():
