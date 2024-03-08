@@ -70,8 +70,8 @@ def main():
                         moveMade = True
                         selectedsquare = ()
                         playerClick = []
-                    else:
-                        playerClick = [selectedsquare]
+                    else: # If player clicks twice on board or on different pieces, the last click is saved.
+                        playerClick = [selectedsquare] # If a move is possible in the next click, it will be done.
                     
             elif e.type == p.KEYDOWN:
                 if e.key == p.K_LEFT:
