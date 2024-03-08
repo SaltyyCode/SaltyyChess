@@ -1,6 +1,6 @@
 # SaltyyChess (And soon SaltyyBot v1 I hope)
 
-This project is my very first personal python project during my first year in computer science !
+This project is my very first personal python project* during my first year in computer science !
 
 The goal of this project is making my own chess board, with all chess rules, and then create my own chess engine with an elo greater than 1700 (on chess.com standings not FIDE one).
 
@@ -30,3 +30,4 @@ It is the most logical way for me to combine my newest passion for code and my c
 
 ![image](https://github.com/SaltyyCode/SaltyyChess/assets/141867236/90602e5d-dc05-4380-bcde-f2be49c82b7b)
 *state of the game still 08/03/2024*
+* *re: I'm only studying C in my school so all Python is self-taught*
