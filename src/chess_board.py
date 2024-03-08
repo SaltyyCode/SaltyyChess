@@ -4,10 +4,10 @@ class GameState():
         self.board = [
             ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
             ["bp", "bp", "bp", "bp", "bp", "bp", "bp", "bp"],
-            ["--", "--", "--", "--", "wp", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "bp", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["wp", "wp", "wp", "wp", "wp", "wp", "wp", "wp"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"],]
         self.whiteMove = True
@@ -65,6 +65,10 @@ class GameState():
                         self.rookMove(r, c, moves)
                     if piece == 'K':
                         self.kingMove(r, c, moves)
+                    if piece == 'B':
+                        self.bishopMove(r, c, moves)
+                    if piece == 'Q':
+                        self.queenMoves(r, c, moves)
                     #self.moveFunc[piece](r, c, moves) instead of last if statement later
         return moves
 
@@ -115,8 +119,8 @@ class GameState():
                     break
 
     def kingMove(self, r, c, moves):
-        
-        directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+
+        directions = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1))
         opponentColor = "b" if self.whiteMove else "w"
 
         for d in directions:
@@ -126,7 +130,32 @@ class GameState():
                 endPiece = self.board[endRow][endCol]
                 if endPiece == "--" or endPiece[0] == opponentColor:
                     moves.append(Move((r, c), (endRow, endCol), self.board))
+        
+    def bishopMove(self, r, c, moves):
 
+        dir = ((-1, -1), (-1, 1), (1, -1), (1, 1))
+        opponentColor = "b" if self.whiteMove else "w"
+
+        for d in dir:
+            for x in range(1, 8):
+                endRow = r + d[0] * x
+                endCol = c + d[1] * x
+                if 0 <= endRow < 8 and 0 <= endCol < 8:
+                    endPiece = self.board[endRow][endCol]
+                    if endPiece == "--":
+                        moves.append(Move((r, c), (endRow, endCol), self.board))
+                    elif endPiece[0] == opponentColor:
+                        moves.append(Move((r, c), (endRow, endCol), self.board))
+                        break
+                    else:
+                        break
+                else:
+                    break
+
+    def queenMoves(self, r, c, moves):
+        
+        self.bishopMove(r, c, moves)
+        self.rookMove(r, c, moves)
 
 
 class Move():
