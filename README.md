@@ -24,3 +24,6 @@ I have been passionate about chess for the last 4 years, playing a lot of games 
 After looking a great video serie of https://www.youtube.com/@SebastianLague, where here makes his own chess engine and then run a tournament with other people own made bots (heres the video look at it ! : https://youtu.be/_vqlIPDR2TU?si=hU3OGR-EAz8wl7zm & https://youtu.be/_vqlIPDR2TU?si=yqGfmje-dYMvyfsF & https://www.youtube.com/watch?v=U4ogK0MIzqk)
 So basicaly all this project is about me wanting to make my own chess engine, that i'd train and play against in order to create my own engine capable of beating myself.
 It is the most logical way for me to combine my newest passion for code and my chess one :D
+
+![image](https://github.com/SaltyyCode/SaltyyChess/assets/141867236/90602e5d-dc05-4380-bcde-f2be49c82b7b)
+*state of the game still 08/03/2024*
