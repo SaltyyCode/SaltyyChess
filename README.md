@@ -1,7 +1,9 @@
 # SaltyyChess (And soon SaltyyBot v1 I hope)
 
 This project is my very first personal python project during my first year in computer science !
+
 The goal of this project is making my own chess board, with all chess rules, and then create my own chess engine with an elo greater than 1700 (on chess.com standings not FIDE one).
+
 For now I'm still working on the chess board, with left to include rules about check(mate) / pins / castle / en-passant ect.. (I only have legals moves for all pieces and undo / redo) *08/03/2024 4:14 am*
 
 
