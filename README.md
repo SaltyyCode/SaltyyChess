@@ -30,4 +30,4 @@ It is the most logical way for me to combine my newest passion for code and my c
 
 ![image](https://github.com/SaltyyCode/SaltyyChess/assets/141867236/90602e5d-dc05-4380-bcde-f2be49c82b7b)
 *state of the game still 08/03/2024*
-* (*)re: I'm only studying C in my school so all Python is self-taught*
+*re: I'm only studying C in my school so all Python is self-taught*
