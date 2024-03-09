@@ -18,29 +18,37 @@ class GameState():
                          'K': self.kingMove, 'R': self.rookMove}
         self.pins = []
         self.checks = []
-        self.inCheck = False
+        self.wkLoc = (7, 4)
+        self.bKloc = (0,4)
 
     def makeMove(self, move):
         
-        if not self.redoLog:
             self.board[move.startRow][move.startCol] = '--' # Replace starting square by empty space.
             self.board[move.endRow][move.endCol] = move.movedPiece
             self.moveLog.append(move) 
-            self.whiteMove = not self.whiteMove 
+            self.whiteMove = not self.whiteMove
             self.redoLog.clear()
-        else:
-            pass
-    
-    def undo(self): # Go back to previous moves.
+            
+            if move.movedPiece == 'wK':
+                self.wkLoc = (move.endRow, move.endCol)
+            elif move.movedPiece == 'bK':
+                self.bKloc = (move.endRow, move.endCol)
 
-        if self.moveLog:
+    
+    def undo(self): # Go back to previous moves.*
+
+        if len(self.moveLog) != 0:
             move = self.moveLog.pop()
             self.board[move.startRow][move.startCol] = move.movedPiece
             self.board[move.endRow][move.endCol] = move.capturedPiece
             self.whiteMove = not self.whiteMove
             self.redoLog.append(move)
+            if move.movedPiece == 'wK':
+                self.wkLoc = (move.startRow, move.startCol)
+            elif move.movedPiece == 'bK':
+                self.bKloc = (move.startRow, move.startCol)
+        
 
-    
     def redo(self): 
 
         if self.redoLog:
@@ -49,11 +57,45 @@ class GameState():
             self.board[move.endRow][move.endCol] = move.movedPiece
             self.whiteMove = not self.whiteMove
             self.moveLog.append(move)
+            if move.movedPiece == 'wK':
+                self.wkLoc = (move.endRow, move.endCol)
+            elif move.movedPiece == 'bK':
+                self.bKloc = (move.endRow, move.endCol)
+
 
 
     def getvalidMoves(self):
 
-        return self.getallMoves()
+        moves = self.getallMoves()
+        for i in range(len(moves)-1, -1, -1):
+            self.makeMove(moves[i])
+            self.whiteMove = not self.whiteMove
+            if self.IsCheck():
+                moves.remove(moves[i])
+            self.whiteMove = not self.whiteMove
+            self.undo()
+
+        return moves
+    
+    def IsCheck(self):
+
+        if self.whiteMove:
+            return self.AttackedSquare(self.wkLoc[0], self.wkLoc[1])
+        else:
+            return self.AttackedSquare(self.bKloc[0], self.bKloc[1])
+        
+
+    def AttackedSquare(self, r, c):
+
+        self.whiteMove = not self.whiteMove
+        oppMoves = self.getallMoves()
+        self.whiteMove = not self.whiteMove
+        for move in oppMoves:
+            if move.endRow == r and move.endCol == c:
+                return True
+        return False
+
+
     
     def getallMoves(self):
 
