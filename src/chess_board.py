@@ -4,7 +4,7 @@ class GameState():
         self.board = [
             ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
             ["bp", "bp", "bp", "bp", "bp", "bp", "bp", "bp"],
-            ["--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "bQ", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
@@ -67,32 +67,32 @@ class GameState():
     def getvalidMoves(self):
 
         moves = self.getallMoves()
-        for i in range(len(moves)-1, -1, -1):
+        for i in range(len(moves)-1, -1, -1): # Check the list of moves in decreasing order
             self.makeMove(moves[i])
-            self.whiteMove = not self.whiteMove
+            self.whiteMove = not self.whiteMove # Switch to other player
             if self.IsCheck():
-                moves.remove(moves[i])
-            self.whiteMove = not self.whiteMove
-            self.undo()
+                moves.remove(moves[i])  # If there is a check, the move is removed from the list 
+            self.whiteMove = not self.whiteMove  # Comeback to actual player
+            self.undo() # Dont allow the move
 
         return moves
     
     def IsCheck(self):
 
         if self.whiteMove:
-            return self.AttackedSquare(self.wkLoc[0], self.wkLoc[1])
+            return self.AttackedSquare(self.wkLoc[0], self.wkLoc[1]) # Check is white king is attacked; if return True, yes and so check
         else:
             return self.AttackedSquare(self.bKloc[0], self.bKloc[1])
         
 
     def AttackedSquare(self, r, c):
 
-        self.whiteMove = not self.whiteMove
+        self.whiteMove = not self.whiteMove 
         oppMoves = self.getallMoves()
         self.whiteMove = not self.whiteMove
-        for move in oppMoves:
-            if move.endRow == r and move.endCol == c:
-                return True
+        for move in oppMoves: # Check all moves for opponent
+            if move.endRow == r and move.endCol == c: # If a move ends on our col anb our row
+                return True # The square is attacked 
         return False
 
 
