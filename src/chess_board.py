@@ -182,7 +182,6 @@ class Move():
 
         # Initializing a move with the starting position, ending position, and the current state of the board to determine moved and captured pieces.
         self.startRow = stSquare[0]
-        self.startRow = stSquare[0]
         self.startCol = stSquare[1]
         self.endRow = endSquare[0]
         self.endCol = endSquare[1]
