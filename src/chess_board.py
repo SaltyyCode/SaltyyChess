@@ -4,7 +4,7 @@ class GameState():
         self.board = [
             ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
             ["bp", "bp", "bp", "bp", "bp", "bp", "bp", "bp"],
-            ["--", "--", "--", "--", "--", "bQ", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
@@ -26,7 +26,7 @@ class GameState():
             self.board[move.startRow][move.startCol] = '--' # Replace starting square by empty space.
             self.board[move.endRow][move.endCol] = move.movedPiece
             self.moveLog.append(move) 
-            self.whiteMove = not self.whiteMove
+            self.whiteMove = not self.whiteMove # Change flag to allow opp to play
             self.redoLog.clear()
             
             if move.movedPiece == 'wK':
@@ -44,21 +44,21 @@ class GameState():
             self.whiteMove = not self.whiteMove
             self.redoLog.append(move)
             if move.movedPiece == 'wK':
-                self.wkLoc = (move.startRow, move.startCol)
+                self.wkLoc = (move.startRow, move.startCol) # Always keep track of king position 
             elif move.movedPiece == 'bK':
                 self.bKloc = (move.startRow, move.startCol)
         
 
     def redo(self): 
 
-        if self.redoLog:
+        if len(self.redoLog) > 0:
             move = self.redoLog.pop()
             self.board[move.startRow][move.startCol] = '--'
             self.board[move.endRow][move.endCol] = move.movedPiece
             self.whiteMove = not self.whiteMove
             self.moveLog.append(move)
             if move.movedPiece == 'wK':
-                self.wkLoc = (move.endRow, move.endCol)
+                self.wkLoc = (move.endRow, move.endCol) # Double check king location like in undo 
             elif move.movedPiece == 'bK':
                 self.bKloc = (move.endRow, move.endCol)
 
