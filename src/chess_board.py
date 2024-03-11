@@ -45,7 +45,7 @@ class GameState():
     
     def getPosKey(self):
         
-        posKey = ''.join([''.join(row) for row in self.board])
+        posKey = ''.join([''.join(row) for row in self.board]) # Converts the 2D list representation of a chess board into a single string
         return posKey;
     
     
@@ -103,7 +103,7 @@ class GameState():
             self.staleMate = False
             
         posKey = self.getPosKey()
-        if self.MoveHistory.get(posKey, 0) >= 6:
+        if self.MoveHistory.get(posKey, 0) >= 6: # Check the string to see if the current pos already occured 
             self.Draw = True
             print("Draw with repetition")
         else:
