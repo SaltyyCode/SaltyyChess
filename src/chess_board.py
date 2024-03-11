@@ -20,6 +20,8 @@ class GameState():
         self.checks = []
         self.wkLoc = (7, 4)
         self.bKloc = (0,4)
+        self.CheckMate = False
+        self.staleMate = False 
 
     def makeMove(self, move):
         
@@ -74,6 +76,18 @@ class GameState():
                 moves.remove(moves[i])  # If there is a check, the move is removed from the list 
             self.whiteMove = not self.whiteMove  # Comeback to actual player
             self.undo() # Dont allow the move
+        
+        if len(moves) == 0:
+            if self.IsCheck():
+                self.CheckMate = True
+                print("GG y'a mat")
+                      
+            else:
+                self.staleMate = True
+                print("Nulle :(")
+        else:
+            self.CheckMate = False # In case of undo / redo
+            self.staleMate = False
 
         return moves
     
