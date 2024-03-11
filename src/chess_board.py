@@ -22,6 +22,7 @@ class GameState():
         self.bKloc = (0,4)
         self.CheckMate = False
         self.staleMate = False 
+        self.MoveHistory = {}
 
     def makeMove(self, move):
         
@@ -29,13 +30,24 @@ class GameState():
             self.board[move.endRow][move.endCol] = move.movedPiece
             self.moveLog.append(move) 
             self.whiteMove = not self.whiteMove # Change flag to allow opp to play
-            self.redoLog.clear()
-            
+            self.redoLog.clear() 
             if move.movedPiece == 'wK':
                 self.wkLoc = (move.endRow, move.endCol)
             elif move.movedPiece == 'bK':
                 self.bKloc = (move.endRow, move.endCol)
-
+                
+            posKey = self.getPosKey()
+            if posKey in self.MoveHistory:
+                self.MoveHistory[posKey] += 1
+            else:
+                self.MoveHistory[posKey] = 1
+        
+    
+    def getPosKey(self):
+        
+        posKey = ''.join([''.join(row) for row in self.board])
+        return posKey;
+    
     
     def undo(self): # Go back to previous moves.*
 
@@ -49,6 +61,7 @@ class GameState():
                 self.wkLoc = (move.startRow, move.startCol) # Always keep track of king position 
             elif move.movedPiece == 'bK':
                 self.bKloc = (move.startRow, move.startCol)
+                
         
 
     def redo(self): 
@@ -88,7 +101,14 @@ class GameState():
         else:
             self.CheckMate = False # In case of undo / redo
             self.staleMate = False
-
+            
+        posKey = self.getPosKey()
+        if self.MoveHistory.get(posKey, 0) >= 6:
+            self.Draw = True
+            print("Draw with repetition")
+        else:
+            self.Draw = False
+        
         return moves
     
     def IsCheck(self):
