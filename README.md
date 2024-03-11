@@ -4,8 +4,14 @@ This project is my very first personal python project* during my first year in c
 
 The goal of this project is to make my own chess board, with all chess rules, and then create my own chess engine with an elo greater than 1700 (on chess.com standings not FIDE one).
 
-For now I'm still working on the chess board, with  castle / en-passant rules ect.. left to include. (I have legals moves for all pieces, undo / redo, check(mate) & stalemate!) 
-*11/03/2024 3:38pm*
+For now I'm still working on the chess board, with  castle / en-passant rules ect.. left to include.
+
+My Chess Board actually handles : - All legals moves
+                                  - Undo / Redo 
+                                  - Check and CheckMate
+                                  - Stalemate
+                                  - Pins 
+                                  - 3 Moves repetition draw
 
 
 ## Installation
