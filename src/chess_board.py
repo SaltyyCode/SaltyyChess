@@ -23,6 +23,7 @@ class GameState():
         self.CheckMate = False
         self.staleMate = False 
         self.MoveHistory = {}
+        self.Draw = False
 
     def makeMove(self, move):
         
@@ -46,7 +47,7 @@ class GameState():
     def getPosKey(self):
         
         posKey = ''.join([''.join(row) for row in self.board]) # Converts the 2D list representation of a chess board into a single string
-        return posKey;
+        return posKey
     
     
     def undo(self): # Go back to previous moves.*
@@ -81,6 +82,10 @@ class GameState():
 
     def getvalidMoves(self):
 
+        if self.Draw:
+            print("Draw game")
+            return []
+
         moves = self.getallMoves()
         for i in range(len(moves)-1, -1, -1): # Check the list of moves in decreasing order
             self.makeMove(moves[i])
@@ -97,10 +102,12 @@ class GameState():
                       
             else:
                 self.staleMate = True
+                self.Draw = True
                 print("Nulle :(")
         else:
             self.CheckMate = False # In case of undo / redo
             self.staleMate = False
+            self.Draw = True
             
         posKey = self.getPosKey()
         if self.MoveHistory.get(posKey, 0) >= 6: # Check the string to see if the current pos already occured 
