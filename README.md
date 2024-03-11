@@ -7,15 +7,10 @@ The goal of this project is to make my own chess board, with all chess rules, an
 For now I'm still working on the chess board, with  castle / en-passant rules ect.. left to include.
 
 My Chess Board actually handles : - All legals moves
-                                  
                                   - Undo / Redo 
-                                  
                                   - Check and CheckMate
-                                  
                                   - Stalemate
-                                  
                                   - Pins 
-                                  
                                   - 3 Moves repetition draw
 
 
