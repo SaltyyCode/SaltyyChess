@@ -38,6 +38,10 @@ class GameState():
                 self.wkLoc = (move.endRow, move.endCol)
             elif move.movedPiece == 'bK':
                 self.bKloc = (move.endRow, move.endCol)
+            
+            if move.PawnPromotion:
+                self.board[move.endRow][move.endCol] = move.movedPiece[0] + 'Q'
+
                 
             posKey = self.getPosKey()
             if posKey in self.MoveHistory:
@@ -57,8 +61,6 @@ class GameState():
             return True
         return False
         
-    def Promotion(self):
-
         
     
     def getPosKey(self):
@@ -289,6 +291,7 @@ class Move():
         self.capturedPiece = board[self.endRow][self.endCol]
         self.moveID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol
         self.PawnPromotion = False
+        self.Prom = 'Q'
         if self.movedPiece == 'wp' and self.endRow == 0:
             self.PawnPromotion = True
         if self.movedPiece == 'bp' and self.endRow == 8:
