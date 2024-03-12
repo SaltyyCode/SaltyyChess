@@ -81,13 +81,13 @@ def main():
                         playerClicks.append(selectedSquare)  
                     if len(playerClicks) == 2:  
                         move = chess_board.Move(playerClicks[0], playerClicks[1], gs.board)
-                        if move in validMoves:
-                            gs.makeMove(move)
-                            moveMade = True
-                            selectedSquare = ()
-                            playerClicks = []
-                        else: # If player clicks twice on board or on different pieces, the last click is saved.
-
+                        for i in range(len(validMoves)):
+                            if move == validMoves[i]:
+                                gs.makeMove(validMoves[i])
+                                moveMade = True
+                                selectedSquare = ()
+                                playerClicks = []
+                        if not moveMade: # If player clicks twice on board or on different pieces, the last click is saved.
                             playerClicks = [selectedSquare]   # If a move is possible in the next click, it will be done.
                 else:
                     print("Game over. No further moves allowed.")
