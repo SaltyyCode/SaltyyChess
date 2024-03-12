@@ -25,6 +25,7 @@ class GameState():
         self.MoveHistory = {}
         self.Draw = False
         self.MoveCount = 0
+        
 
     def makeMove(self, move):
         
@@ -55,6 +56,9 @@ class GameState():
         if self.MoveCount >= 50: # If there is 50 moves without capture or pawn move.
             return True
         return False
+        
+    def Promotion(self):
+
         
     
     def getPosKey(self):
@@ -284,6 +288,11 @@ class Move():
         self.movedPiece = board[self.startRow][self.startCol]
         self.capturedPiece = board[self.endRow][self.endCol]
         self.moveID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol
+        self.PawnPromotion = False
+        if self.movedPiece == 'wp' and self.endRow == 0:
+            self.PawnPromotion = True
+        if self.movedPiece == 'bp' and self.endRow == 8:
+            self.PawnPromotion = True 
 
 
     def __eq__(self, other):
