@@ -70,24 +70,25 @@ def main():
                 running = False
             elif e.type == p.MOUSEBUTTONDOWN:
                 if not gs.Draw and not gs.CheckMate and not gs.staleMate:  # Game is still on
-                    location = p.mouse.get_pos()  # Get mouse position
+                    location = p.mouse.get_pos()  
                     col = location[0] // SQUARE_SIZE
                     row = location[1] // SQUARE_SIZE
-                    if selectedSquare == (row, col):  # User clicked the same square twice
-                        selectedSquare = ()  # Deselect
-                        playerClicks = []  # Clear clicks
+                    if selectedSquare == (row, col):  
+                        selectedSquare = () 
+                        playerClicks = []  
                     else:
-                        selectedSquare = (row, col)  # Select square
-                        playerClicks.append(selectedSquare)  # Append for move
-                    if len(playerClicks) == 2:  # Check if two clicks (start and end of move)
+                        selectedSquare = (row, col)  
+                        playerClicks.append(selectedSquare)  
+                    if len(playerClicks) == 2:  
                         move = chess_board.Move(playerClicks[0], playerClicks[1], gs.board)
                         if move in validMoves:
                             gs.makeMove(move)
                             moveMade = True
                             selectedSquare = ()
                             playerClicks = []
-                        else:
-                            playerClicks = [selectedSquare]  # Keep the last click if the move wasn't valid
+                        else: # If player clicks twice on board or on different pieces, the last click is saved.
+
+                            playerClicks = [selectedSquare]   # If a move is possible in the next click, it will be done.
                 else:
                     print("Game over. No further moves allowed.")
                     
