@@ -24,13 +24,14 @@ class GameState():
         self.staleMate = False 
         self.MoveHistory = {}
         self.Draw = False
+        self.MoveCount = 0
 
     def makeMove(self, move):
         
             self.board[move.startRow][move.startCol] = '--' # Replace starting square by empty space.
             self.board[move.endRow][move.endCol] = move.movedPiece
-            self.moveLog.append(move) 
-            self.whiteMove = not self.whiteMove # Change flag to allow opp to play
+            self.moveLog.append(move)
+            self.whiteMove = not self.whiteMove # Change flag to allow opp to play.
             self.redoLog.clear() 
             if move.movedPiece == 'wK':
                 self.wkLoc = (move.endRow, move.endCol)
@@ -42,15 +43,27 @@ class GameState():
                 self.MoveHistory[posKey] += 1
             else:
                 self.MoveHistory[posKey] = 1
+            
+            if move.movedPiece[1] == 'p' or move.capturedPiece != '--': # If a pawn is moved or whatever piece is captured.
+                self.MoveCount = 0 # The count restart to 0 .
+            else:
+                self.MoveCount += 1
+            self.Draw = self.CheckDraw() # If CheckDraw = True, self.Draw = True also.
+
+    def CheckDraw(self):
+
+        if self.MoveCount >= 50: # If there is 50 moves without capture or pawn move.
+            return True
+        return False
         
     
     def getPosKey(self):
         
-        posKey = ''.join([''.join(row) for row in self.board]) # Converts the 2D list representation of a chess board into a single string
+        posKey = ''.join([''.join(row) for row in self.board]) # Converts the 2D list representation of a chess board into a single string.
         return posKey
     
     
-    def undo(self): # Go back to previous moves.*
+    def undo(self): # Go back to previous moves.
 
         if len(self.moveLog) != 0:
             move = self.moveLog.pop()
@@ -59,7 +72,7 @@ class GameState():
             self.whiteMove = not self.whiteMove
             self.redoLog.append(move)
             if move.movedPiece == 'wK':
-                self.wkLoc = (move.startRow, move.startCol) # Always keep track of king position 
+                self.wkLoc = (move.startRow, move.startCol) # Always keep track of king position.
             elif move.movedPiece == 'bK':
                 self.bKloc = (move.startRow, move.startCol)
                 
@@ -74,7 +87,7 @@ class GameState():
             self.whiteMove = not self.whiteMove
             self.moveLog.append(move)
             if move.movedPiece == 'wK':
-                self.wkLoc = (move.endRow, move.endCol) # Double check king location like in undo 
+                self.wkLoc = (move.endRow, move.endCol) # Double check king location like in undo .
             elif move.movedPiece == 'bK':
                 self.bKloc = (move.endRow, move.endCol)
 
@@ -87,13 +100,13 @@ class GameState():
             return []
 
         moves = self.getallMoves()
-        for i in range(len(moves)-1, -1, -1): # Check the list of moves in decreasing order
+        for i in range(len(moves)-1, -1, -1): # Check the list of moves in decreasing order.
             self.makeMove(moves[i])
-            self.whiteMove = not self.whiteMove # Switch to other player
+            self.whiteMove = not self.whiteMove # Switch to other player.
             if self.IsCheck():
-                moves.remove(moves[i])  # If there is a check, the move is removed from the list 
-            self.whiteMove = not self.whiteMove  # Comeback to actual player
-            self.undo() # Dont allow the move
+                moves.remove(moves[i])  # If there is a check, the move is removed from the list.
+            self.whiteMove = not self.whiteMove  # Comeback to actual player.
+            self.undo() # Dont allow the move.
         
         if len(moves) == 0:
             if self.IsCheck():
@@ -105,12 +118,12 @@ class GameState():
                 self.Draw = True
                 print("Nulle :(")
         else:
-            self.CheckMate = False # In case of undo / redo
+            self.CheckMate = False # In case of undo / redo.
             self.staleMate = False
-            self.Draw = True
+            self.Draw = False
             
         posKey = self.getPosKey()
-        if self.MoveHistory.get(posKey, 0) >= 6: # Check the string to see if the current pos already occured 
+        if self.MoveHistory.get(posKey, 0) >= 6: # Check the string to see if the current pos already occured.
             self.Draw = True
             print("Draw with repetition")
         else:
@@ -121,7 +134,7 @@ class GameState():
     def IsCheck(self):
 
         if self.whiteMove:
-            return self.AttackedSquare(self.wkLoc[0], self.wkLoc[1]) # Check is white king is attacked; if return True, yes and so check
+            return self.AttackedSquare(self.wkLoc[0], self.wkLoc[1]) # Check is white king is attacked; If return True, yes and so check.
         else:
             return self.AttackedSquare(self.bKloc[0], self.bKloc[1])
         
@@ -131,9 +144,9 @@ class GameState():
         self.whiteMove = not self.whiteMove 
         oppMoves = self.getallMoves()
         self.whiteMove = not self.whiteMove
-        for move in oppMoves: # Check all moves for opponent
-            if move.endRow == r and move.endCol == c: # If a move ends on our col anb our row
-                return True # The square is attacked 
+        for move in oppMoves: # Check all moves for opponent.
+            if move.endRow == r and move.endCol == c: # If a move ends on our col anb our row.
+                return True # The square is attacked.
         return False
 
 
