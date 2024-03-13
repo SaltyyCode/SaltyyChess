@@ -41,9 +41,9 @@ def seeMoves(screen, gs, selectedsquare, getallMoves):
         if gs.board[r][c][0] == ('w' if gs.whiteMove else 'b'):
             s = p.Surface((SQUARE_SIZE, SQUARE_SIZE))
             s.set_alpha(100)
-            s.fill(p.Color('green'))
-            screen.blit(s, (c*SQUARE_SIZE, r*SQUARE_SIZE))
             s.fill(p.Color('red'))
+            screen.blit(s, (c*SQUARE_SIZE, r*SQUARE_SIZE))
+            s.fill(p.Color('green'))
             for move in getallMoves:
                 if move.startRow == r and move.startCol == c:
                     screen.blit(s, (move.endCol * SQUARE_SIZE, move.endRow * SQUARE_SIZE))
