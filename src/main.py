@@ -96,10 +96,10 @@ def main():
                     print("Game over. No further moves allowed.")
                     
             elif e.type == p.KEYDOWN:
-                if e.key == p.K_z:  # Undo move
+                if e.key == p.K_LEFT:  # Undo move
                     gs.undo()
                     moveMade = True
-                elif e.key == p.K_y:  # Redo move
+                elif e.key == p.K_RIGHT:  # Redo move
                     gs.redo()
                     moveMade = True
         
