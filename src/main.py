@@ -41,9 +41,9 @@ def seeMoves(screen, gs, selectedsquare, getallMoves):
         if gs.board[r][c][0] == ('w' if gs.whiteMove else 'b'):
             s = p.Surface((SQUARE_SIZE, SQUARE_SIZE))
             s.set_alpha(100)
-            s.fill(p.Color('red'))
-            screen.blit(s, (c*SQUARE_SIZE, r*SQUARE_SIZE))
             s.fill(p.Color('green'))
+            screen.blit(s, (c*SQUARE_SIZE, r*SQUARE_SIZE))
+            s.fill(p.Color('red'))
             for move in getallMoves:
                 if move.startRow == r and move.startCol == c:
                     screen.blit(s, (move.endCol * SQUARE_SIZE, move.endRow * SQUARE_SIZE))
@@ -52,62 +52,53 @@ def seeMoves(screen, gs, selectedsquare, getallMoves):
 def main():
     
     p.init()
-    sound_path = "assets/sounds/move.mp3"
-    move_sound = p.mixer.Sound(sound_path)
     screen = p.display.set_mode((WIDTH, HEIGHT))
     p.display.set_caption("SaltyyChess, First python project")
     clock = p.time.Clock()
-    screen.fill(p.Color("white"))
+    screen.fill((255, 255, 255))
     gs = chess_board.GameState()
-    validMoves = gs.getvalidMoves()
+    validMove = gs.getvalidMoves()
     moveMade = False
     loadpng()
     running = True
-    selectedSquare = ()
-    playerClicks = []
+    selectedsquare = ()
+    playerClick = []
 
     while running:
         for e in p.event.get():
             if e.type == p.QUIT:
                 running = False
             elif e.type == p.MOUSEBUTTONDOWN:
-                if not gs.Draw and not gs.CheckMate and not gs.staleMate:  # Game is still on
-                    location = p.mouse.get_pos()  
-                    col = location[0] // SQUARE_SIZE
-                    row = location[1] // SQUARE_SIZE
-                    if selectedSquare == (row, col):  
-                        selectedSquare = () 
-                        playerClicks = []  
-                    else:
-                        selectedSquare = (row, col)  
-                        playerClicks.append(selectedSquare)  
-                    if len(playerClicks) == 2:  
-                        move = chess_board.Move(playerClicks[0], playerClicks[1], gs.board)
-                        for i in range(len(validMoves)):
-                            if move == validMoves[i]:
-                                gs.makeMove(validMoves[i])
-                                move_sound.play()
-                                moveMade = True
-                                selectedSquare = ()
-                                playerClicks = []
-                        if not moveMade: # If player clicks twice on board or on different pieces, the last click is saved.
-                            playerClicks = [selectedSquare]   # If a move is possible in the next click, it will be done.
+                location = p.mouse.get_pos()
+                col = location[0]//SQUARE_SIZE
+                row = location[1]//SQUARE_SIZE
+                if selectedsquare == (row, col):
+                    selectedsquare = ()
+                    playerClick = []
                 else:
-                    print("Game over. No further moves allowed.")
+                    selectedsquare = (row, col)
+                    playerClick.append(selectedsquare)
+                if len(playerClick) == 2:
+                    move = chess_board.Move(playerClick[0], playerClick[1], gs.board)
+                    if move in validMove:
+                        gs.makeMove(move)
+                        moveMade = True
+                        selectedsquare = ()
+                        playerClick = []
+                    else: # If player clicks twice on board or on different pieces, the last click is saved.
+                        playerClick = [selectedsquare] # If a move is possible in the next click, it will be done.
                     
             elif e.type == p.KEYDOWN:
-                if e.key == p.K_LEFT:  # Undo move
+                if e.key == p.K_LEFT:
                     gs.undo()
-                    moveMade = True
-                elif e.key == p.K_RIGHT:  # Redo move
+                elif e.key == p.K_RIGHT:
                     gs.redo()
-                    moveMade = True
         
         if moveMade:
-            validMoves = gs.getvalidMoves()
+            validMove = gs.getvalidMoves()
             moveMade = False
 
-        boardpieces(screen, gs, selectedSquare, validMoves)  # Draw pieces on the board
+        boardpieces(screen, gs, selectedsquare, validMove)
         clock.tick(FPS_MAX)
         p.display.flip()
 
