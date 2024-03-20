@@ -54,6 +54,8 @@ def main():
     p.init()
     sound_path = "assets/sounds/move.mp3"
     move_soud = p.mixer.Sound(sound_path)
+    capture_path = "assets/sounds/capture.mp3"
+    capture_sound = p.mixer.Sound(capture_path)
     screen = p.display.set_mode((WIDTH, HEIGHT))
     p.display.set_caption("SaltyyChess, First python project")
     clock = p.time.Clock()
@@ -83,7 +85,7 @@ def main():
                 if len(playerClick) == 2:
                     move = chess_board.Move(playerClick[0], playerClick[1], gs.board)
                     if move in validMove:
-                        gs.makeMove(move)
+                        gs.makeMove(move, capture_sound)
                         move_soud.play()
                         moveMade = True
                         selectedsquare = ()

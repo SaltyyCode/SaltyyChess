@@ -25,9 +25,12 @@ class GameState():
         self.MoveHistory = {}
         
 
-    def makeMove(self, move):
+    def makeMove(self, move, capture_sound=None):
         
             self.board[move.startRow][move.startCol] = '--' # Replace starting square by empty space.
+            if self.board[move.endRow][move.endCol] != '--':
+                if capture_sound:
+                    capture_sound.play()
             self.board[move.endRow][move.endCol] = move.movedPiece
             self.moveLog.append(move) 
             self.whiteMove = not self.whiteMove # Change flag to allow opp to play
