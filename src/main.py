@@ -1,5 +1,6 @@
 import pygame as p
 import chess_board
+from load_sounds import load_sounds
 
 
 WIDTH = HEIGHT = 800
@@ -52,14 +53,6 @@ def seeMoves(screen, gs, selectedsquare, getallMoves):
 def main():
     
     p.init()
-    sound_path = "assets/sounds/move.mp3"
-    move_soud = p.mixer.Sound(sound_path)
-    capture_path = "assets/sounds/capture.mp3"
-    capture_sound = p.mixer.Sound(capture_path)
-    check_path = "assets/sounds/check.mp3"
-    check_sound = p.mixer.Sound(check_path)
-    mate_path = "assets/sounds/mat.mp3"
-    mate_sound = p.mixer.Sound(mate_path)
     screen = p.display.set_mode((WIDTH, HEIGHT))
     p.display.set_caption("SaltyyChess, First python project")
     clock = p.time.Clock()
@@ -68,6 +61,11 @@ def main():
     validMove = gs.getvalidMoves()
     moveMade = False
     loadpng()
+    sounds = load_sounds()
+    move_sound = sounds["move"]
+    capture_sound = sounds["capture"]
+    check_sound = sounds["check"]
+    mate_sound = sounds["mate"]
     running = True
     selectedsquare = ()
     playerClick = []
@@ -93,7 +91,7 @@ def main():
                         if gs.IsCheck():
                             check_sound.play()
                         else:
-                            move_soud.play()
+                            move_sound.play()
                         moveMade = True
                         selectedsquare = ()
                         playerClick = []
