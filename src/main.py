@@ -58,6 +58,8 @@ def main():
     capture_sound = p.mixer.Sound(capture_path)
     check_path = "assets/sounds/check.mp3"
     check_sound = p.mixer.Sound(check_path)
+    mate_path = "assets/sounds/mat.mp3"
+    mate_sound = p.mixer.Sound(mate_path)
     screen = p.display.set_mode((WIDTH, HEIGHT))
     p.display.set_caption("SaltyyChess, First python project")
     clock = p.time.Clock()
@@ -107,6 +109,8 @@ def main():
         if moveMade:
             validMove = gs.getvalidMoves()
             moveMade = False
+            if gs.CheckMate:
+                mate_sound.play()
 
         boardpieces(screen, gs, selectedsquare, validMove)
         clock.tick(FPS_MAX)
