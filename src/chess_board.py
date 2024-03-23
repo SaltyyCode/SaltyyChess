@@ -23,6 +23,9 @@ class GameState():
         self.CheckMate = False
         self.staleMate = False 
         self.MoveHistory = {}
+        self.MoveCount = 0
+        self.Draw = False
+        
         
 
     def makeMove(self, move, capture_sound=None):
@@ -45,7 +48,15 @@ class GameState():
                 self.MoveHistory[posKey] += 1
             else:
                 self.MoveHistory[posKey] = 1
-        
+            
+            if move.movedPiece[1] == 'p' or move.capturedPiece != '':
+                self.MoveCount = 0
+            else:
+                self.MoveCount += 1
+                if self.MoveCount == 50:
+                    self.Draw = True
+            self.CheckGameStatus()
+                    
     
     def getPosKey(self):
         
@@ -95,6 +106,7 @@ class GameState():
             self.undo() # Dont allow the move
         
         if len(moves) == 0:
+            
             if self.IsCheck():
                 self.CheckMate = True
                 print("GG y'a mat")
