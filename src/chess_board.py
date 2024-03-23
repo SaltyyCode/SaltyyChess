@@ -25,8 +25,9 @@ class GameState():
         self.MoveHistory = {}
         self.MoveCount = 0
         self.Draw = False
+        self.GameOver = False
         
-        
+    def         
 
     def makeMove(self, move, capture_sound=None):
         
@@ -53,7 +54,7 @@ class GameState():
                 self.MoveCount = 0
             else:
                 self.MoveCount += 1
-                if self.MoveCount == 50:
+                if self.MoveCount == 100:
                     self.Draw = True
             self.CheckGameStatus()
                     
