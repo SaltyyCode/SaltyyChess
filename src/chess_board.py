@@ -26,6 +26,10 @@ class GameState():
         self.MoveCount = 0
         self.Draw = False
         self.gameOver = False
+        self.hasKingMoved = {'wK': False, 'bK': False}
+        self.hasRookMoved = {'wR1': False, 'bR1': False, 'wR2': False, 'bR2': False}
+        
+    
         
     def CheckGameStatus(self):
         if self.CheckMate or self.staleMate or self.Draw:
@@ -53,8 +57,23 @@ class GameState():
             self.redoLog.clear() 
             if move.movedPiece == 'wK':
                 self.wkLoc = (move.endRow, move.endCol)
+                self.hasKingMoved['wk'] = True
             elif move.movedPiece == 'bK':
                 self.bKloc = (move.endRow, move.endCol)
+                self.hasKingMoved['bk'] = True
+            elif move.movedPiece == 'wR':
+    
+                if move.startCol == 0: 
+                    self.hasRookMoved['wR1'] = True
+                else:
+                    self.hasRookMoved['wR2'] = True
+            elif move.movedPiece == 'bR':
+
+                if move.startCol == 0:
+                    self.hasRookMoved['bR1'] = True
+                else:
+                    self.hasRookMoved['bR2'] = True
+                
                 
             posKey = self.getPosKey()
             if posKey in self.MoveHistory:
@@ -68,6 +87,8 @@ class GameState():
                 self.MoveCount += 1
                 if self.MoveCount == 100: # When both players play 50 moves without any capture or pawn move
                     self.Draw = True # Its a draw (50 moves rules)
+            
+            
             
                     
     
