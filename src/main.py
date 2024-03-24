@@ -35,7 +35,7 @@ def main():
         for e in p.event.get():
             if e.type == p.QUIT:
                 running = False
-            elif e.type == p.MOUSEBUTTONDOWN:
+            elif e.type == p.MOUSEBUTTONDOWN and not gs.gameOver:
                 location = p.mouse.get_pos()
                 col = location[0]//SQUARE_SIZE
                 row = location[1]//SQUARE_SIZE
@@ -70,6 +70,9 @@ def main():
             moveMade = False
             if gs.CheckMate:
                 mate_sound.play()
+            if gs.CheckGameStatus() == True:
+                validMove = []
+                
 
         boardpieces(screen, gs, selectedsquare, validMove)
         clock.tick(FPS_MAX)
