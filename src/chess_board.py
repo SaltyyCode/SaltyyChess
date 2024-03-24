@@ -25,9 +25,21 @@ class GameState():
         self.MoveHistory = {}
         self.MoveCount = 0
         self.Draw = False
-        self.GameOver = False
+        self.gameOver = False
         
-    def         
+    def CheckGameStatus(self):
+        if self.CheckMate or self.staleMate or self.Draw:
+            self.gameOver = True
+        if self.CheckMate:
+                print("Échec et mat.")
+        elif self.staleMate:
+                print("Pat.")
+        elif self.Draw:
+                print("Partie nulle.")
+        else:
+            self.gameOver = False
+            
+        return self.gameOver
 
     def makeMove(self, move, capture_sound=None):
         
@@ -56,7 +68,7 @@ class GameState():
                 self.MoveCount += 1
                 if self.MoveCount == 100:
                     self.Draw = True
-            self.CheckGameStatus()
+            
                     
     
     def getPosKey(self):
