@@ -62,12 +62,12 @@ class GameState():
             else:
                 self.MoveHistory[posKey] = 1
             
-            if move.movedPiece[1] == 'p' or move.capturedPiece != '':
-                self.MoveCount = 0
+            if move.movedPiece[1] == 'p' or move.capturedPiece != '--': # If we move a pawn or capture a piece
+                self.MoveCount = 0 
             else:
                 self.MoveCount += 1
-                if self.MoveCount == 100:
-                    self.Draw = True
+                if self.MoveCount == 100: # When both players play 50 moves without any capture or pawn move
+                    self.Draw = True # Its a draw (50 moves rules)
             
                     
     
@@ -132,7 +132,7 @@ class GameState():
             self.staleMate = False
             
         posKey = self.getPosKey()
-        if self.MoveHistory.get(posKey, 0) >= 6: # Check the string to see if the current pos already occured s
+        if self.MoveHistory.get(posKey, 0) >= 6: # Check the string to see if the current pos already occured
             self.Draw = True
             print("Draw with repetition")
         else:
