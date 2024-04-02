@@ -88,6 +88,8 @@ class GameState():
                 if self.MoveCount == 100: # When both players play 50 moves without any capture or pawn move
                     self.Draw = True # Its a draw (50 moves rules)
             
+            if move.PawnPromotion:
+                self.board[move.endRow][move.endCol] = move.movedPiece[0] + 'Q'
             
             
                     
@@ -314,6 +316,12 @@ class Move():
         self.movedPiece = board[self.startRow][self.startCol]
         self.capturedPiece = board[self.endRow][self.endCol]
         self.moveID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol
+        self.PawnPromotion = False
+        self.Prom = 'Q'
+        if self.movedPiece == 'wp' and self.endRow == 0:
+            self.PawnPromotion = True
+        if self.movedPiece == 'bp' and self.endRow == 8:
+            self.PawnPromotion = True
 
 
     def __eq__(self, other):
