@@ -7,7 +7,6 @@ WIDTH = HEIGHT = 800
 FPS_MAX = 15
 
 def main():
-
     p.init()
     screen = p.display.set_mode((WIDTH, HEIGHT))
     clock = p.time.Clock()
@@ -20,12 +19,14 @@ def main():
     running = True
     selected_square = ()
     player_clicks = []
+    game_over = False
+    in_check_status = False
 
     while running:
         for e in p.event.get():
             if e.type == p.QUIT:
                 running = False
-            elif e.type == p.MOUSEBUTTONDOWN:
+            elif e.type == p.MOUSEBUTTONDOWN and not game_over:
                 loc = p.mouse.get_pos()
                 col = loc[0] // game_ui.SQUARE_SIZE
                 row = loc[1] // game_ui.SQUARE_SIZE
@@ -47,27 +48,33 @@ def main():
                                 play_sound(sounds, "capture")
                             else:
                                 play_sound(sounds, "move")
+                            in_check_status = False
 
                     if not move_made:
                         player_clicks = [selected_square]
 
-            elif e.type == p.KEYDOWN:
+            elif e.type == p.KEYDOWN and not game_over:
                 if e.key == p.K_z:
                     gs.undo_move()
                     move_made = True
+                    in_check_status = False
 
-            if gs.checkmate:
+            if not game_over and gs.checkmate:
                 if gs.white_to_move:
                     print("Black wins")
                 else:
                     print("White wins")
                 play_sound(sounds, "mate")
-                running = False
-            elif gs.stalemate:
+                game_over = True
+
+            elif not game_over and gs.stalemate:
                 print("Stalemate")
-                running = False
-            elif gs.in_check():
-                play_sound(sounds, "check")  # Jouer le son d'échec
+                play_sound(sounds, "check")
+                game_over = True
+
+            elif not game_over and gs.in_check() and not in_check_status:
+                play_sound(sounds, "check")
+                in_check_status = True
 
         if move_made:
             valid_moves = gs.get_valid_moves()
