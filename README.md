@@ -1,10 +1,10 @@
 # SaltyyChess (And soon SaltyyBot v1 I hope)
 
-This project is my very first personal python project* during my first year in computer science !
+This project is my very first personal python project during my first year in computer science !
 
 The goal of this project is to make my own chess board, with all chess rules, and then create my own chess engine with an elo greater than 1700 (on chess.com standings not FIDE one).
 
-For now I'm still working on the chess board, with  castle / en-passant rules ect.. left to include.
+For now I finished my board (just have to include under-promotion) and will work soon on my Chess Bot
 
 My Chess Board actually handles : - All legals moves
                                   - Undo / Redo 
@@ -12,6 +12,8 @@ My Chess Board actually handles : - All legals moves
                                   - Stalemate
                                   - Pins 
                                   - 3 Moves repetition draw
+                                  - Castling
+                                  - En-passant
 
 
 ## Installation
