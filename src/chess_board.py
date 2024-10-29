@@ -8,6 +8,7 @@ class GameState:
         self.black_king_location = (0, 4)
         self.checkmate = False
         self.stalemate = False
+        self.repetition_draw = False
         self.en_passant_possible = ()
         self.MoveHistory = {}
         self.MoveCount = 0
@@ -61,25 +62,32 @@ class GameState:
         self.fullmove_number = int(parts[5])
 
 
-    def make_move(self, move):
-
+    def make_move(self, move, is_final_move=False):
+        # Exécution du mouvement
         self.board[move.start_row][move.start_col] = "--"
         self.board[move.end_row][move.end_col] = move.piece_moved
         self.move_log.append(move)
         self.white_to_move = not self.white_to_move
 
+        # Mettre à jour les positions du roi
         if move.piece_moved == "wKing":
             self.white_king_location = (move.end_row, move.end_col)
         elif move.piece_moved == "bKing":
             self.black_king_location = (move.end_row, move.end_col)
+
+        # Promotion et capture en passant
         if move.pawn_promotion:
             self.board[move.end_row][move.end_col] = move.piece_moved[0] + 'Queen'
         if move.is_enpassant_move:
             self.board[move.start_row][move.end_col] = '--'
+
+        # Mettre à jour la possibilité de prise en passant
         if move.piece_moved[1] == "P" and abs(move.start_row - move.end_row) == 2:
             self.en_passant_possible = ((move.start_row + move.end_row) // 2, move.start_col)
         else:
             self.en_passant_possible = ()
+
+        # Mouvements de roque
         if move.is_castle_move:
             if move.end_col - move.start_col == 2:
                 self.board[move.end_row][move.end_col - 1] = self.board[move.end_row][move.end_col + 1]
@@ -88,21 +96,54 @@ class GameState:
                 self.board[move.end_row][move.end_col + 1] = self.board[move.end_row][move.end_col - 2]
                 self.board[move.end_row][move.end_col - 2] = '--'
 
+        # Mise à jour des droits de roque
         self.update_castling_rights(move)
         self.castling_rights_log.append(CastlingRights(self.castling_rights.wks, self.castling_rights.bks,
-                                                       self.castling_rights.wqs, self.castling_rights.bqs))
-        posKey = self.getPosKey()
-        if posKey in self.MoveHistory:
-                self.MoveHistory[posKey] += 1
-        else:
-                self.MoveHistory[posKey] = 1
-            
-        if move.piece_moved[1] == 'P' or move.piece_captured != '--':  # Vérifie si le coup implique un pion ou une capture
-            self.MoveCount = 0 
-        else:
-            self.MoveCount += 1
-            if self.MoveCount == 100:  # Si les deux joueurs jouent 50 coups sans capture ou mouvement de pion
-                self.stalemate = True  # Match nul selon la règle des 50 coups
+                                                    self.castling_rights.wqs, self.castling_rights.bqs))
+
+        # Ajouter à MoveHistory seulement si c'est un mouvement final
+        if is_final_move:
+            posKey = self.getPosKey()
+            self.MoveHistory[posKey] = self.MoveHistory.get(posKey, 0) + 1
+
+            # Gestion de la règle des 50 coups
+            if move.piece_moved[1] == 'P' or move.piece_captured != '--':
+                self.MoveCount = 0
+            else:
+                self.MoveCount += 1
+                print(f"Nombre de coups depuis la dernière capture ou mouvement de pion : {self.MoveCount}")
+                if self.MoveCount == 50:
+                    self.stalemate = True  # Match nul selon la règle des 50 coups
+
+            # Vérification de la règle de matériel insuffisant
+            if self.is_insufficient_material():
+                self.stalemate = True
+                print("Match nul pour cause de matériel insuffisant")
+
+    def is_insufficient_material(self):
+
+        white_material = []
+        black_material = []
+        for row in self.board:
+            for square in row:
+                if square != "--":
+                    if square[0] == "w":
+                        white_material.append(square[1])
+                    else:
+                        black_material.append(square[1])
+
+        # Conditions de nulle par insuffisance de matériel
+        if white_material == ["K"] and black_material == ["K"]:
+            return True  # Roi contre roi
+        if (white_material == ["K", "N"] and black_material == ["K"]) or (white_material == ["K"] and black_material == ["K", "N"]):
+            return True  # Roi et cavalier contre roi
+        if (white_material == ["K", "B"] and black_material == ["K"]) or (white_material == ["K"] and black_material == ["K", "B"]):
+            return True  # Roi et fou contre roi
+        if (white_material == ["K", "N"] and black_material == ["K", "B"]) or (white_material == ["K", "B"] and black_material == ["K", "N"]):
+            return True  # Roi et cavalier contre roi et fou
+
+        return False
+
 
             
     def undo_move(self):
@@ -147,6 +188,7 @@ class GameState:
             self.get_castle_moves(self.white_king_location[0], self.white_king_location[1], moves)
         else:
             self.get_castle_moves(self.black_king_location[0], self.black_king_location[1], moves)
+
         for i in range(len(moves) - 1, -1, -1):
             self.make_move(moves[i])
             self.white_to_move = not self.white_to_move
@@ -154,6 +196,7 @@ class GameState:
                 moves.remove(moves[i])
             self.white_to_move = not self.white_to_move
             self.undo_move()
+
         if len(moves) == 0:
             if self.in_check():
                 self.checkmate = True
@@ -162,21 +205,53 @@ class GameState:
         else:
             self.checkmate = False
             self.stalemate = False
-        
+
         posKey = self.getPosKey()
-        if self.MoveHistory.get(posKey, 0) >= 6: # Check the string to see if the current pos already occured
-            self.stalemate = True
-            print("stalemate with repetition")
+        if posKey not in self.MoveHistory:
+            self.MoveHistory[posKey] = 1
         else:
-            self.stalemate = False
+            self.MoveHistory[posKey] += 1
+
+        #print(f"Position FEN: {posKey}, Repetitions: {self.MoveHistory[posKey]}")
+
+        if self.MoveHistory[posKey] >= 3:
+            self.repetition_draw = True
+            if self.MoveHistory[posKey] == 3:  # Afficher une seule fois
+                print("Draw by repetition")
+        else:
+            self.repetition_draw = False
+
+        # Restauration des variables temporaires
         self.en_passant_possible = temp_en_passant_possible
         self.castling_rights = temp_castling_rights
         return moves
 
+
+
+    
     def getPosKey(self):
-        
-        posKey = ''.join([''.join(row) for row in self.board]) # Converts the 2D list representation of a chess board into a single string
+        posKey = ''
+        for row in self.board:
+            empty_squares = 0
+            for piece in row:
+                if piece == '--':  # Case vide
+                    empty_squares += 1
+                else:
+                    if empty_squares > 0:
+                        posKey += str(empty_squares)
+                        empty_squares = 0
+                    posKey += piece
+            if empty_squares > 0:
+                posKey += str(empty_squares)
+            posKey += '/'  # Séparateur de lignes
+
+        # Ajout d'informations supplémentaires
+        posKey += f" {'w' if self.white_to_move else 'b'}"  # Indique le joueur
+        posKey += f" KQkq"  # Ajoute les droits de roque
+        posKey += f" {self.en_passant_possible if self.en_passant_possible else '-'}"  # Ajoute la case de prise en passant
+
         return posKey
+
 
     def in_check(self):
 
