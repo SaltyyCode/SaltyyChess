@@ -1,17 +1,7 @@
 class GameState:
     def __init__(self):
-
-        self.board = [
-            ["bRook", "bN", "bBishop", "bQueen", "bKing", "bBishop", "bN", "bRook"],
-            ["bPawn", "bPawn", "bPawn", "bPawn", "bPawn", "bPawn", "bPawn", "bPawn"],
-            ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["wPawn", "wPawn", "wPawn", "wPawn", "wPawn", "wPawn", "wPawn", "wPawn"],
-            ["wRook", "wN", "wBishop", "wQueen", "wKing", "wBishop", "wN", "wRook"]]
-        self.move_functions = {'P': self.pawnMove, 'R': self.rookMove, 'N': self.knightMoves,
-                               'B': self.bishopMove, 'Q': self.queenMoves, 'K': self.kingMove}
+        # Initialisation des attributs de GameState
+        self.board = [["--" for _ in range(8)] for _ in range(8)]
         self.white_to_move = True
         self.move_log = []
         self.white_king_location = (7, 4)
@@ -19,11 +9,57 @@ class GameState:
         self.checkmate = False
         self.stalemate = False
         self.en_passant_possible = ()
-        self.castling_rights = CastlingRights(True, True, True, True)
-        self.castling_rights_log = [CastlingRights(self.castling_rights.wks, self.castling_rights.bks,
-                                                   self.castling_rights.wqs, self.castling_rights.bqs)]
         self.MoveHistory = {}
         self.MoveCount = 0
+        self.castling_rights = CastlingRights(True, True, True, True)
+        self.castling_rights_log = [CastlingRights(True, True, True, True)]
+        self.halfmove_clock = 0
+        self.fullmove_number = 1
+        self.move_functions = {
+            'P': self.pawnMove,
+            'R': self.rookMove,
+            'N': self.knightMoves,
+            'B': self.bishopMove,
+            'Q': self.queenMoves,
+            'K': self.kingMove
+        }
+
+    def setup_from_fen(self, fen):
+        piece_mapping = {
+            "R": "Rook", "N": "N", "B": "Bishop", "Q": "Queen", "K": "King", "P": "Pawn"
+        }
+        
+        parts = fen.split()
+        piece_placement = parts[0]
+        rows = piece_placement.split('/')
+        for r, row in enumerate(rows):
+            col = 0
+            for char in row:
+                if char.isdigit():
+                    col += int(char)
+                else:
+                    color = 'w' if char.isupper() else 'b'
+                    piece_type = piece_mapping[char.upper()]
+                    self.board[r][col] = color + piece_type
+                    col += 1
+
+        self.white_to_move = (parts[1] == 'w')
+        castling_rights = parts[2]
+        self.castling_rights = CastlingRights(
+            'K' in castling_rights,
+            'Q' in castling_rights,
+            'k' in castling_rights,
+            'q' in castling_rights
+        )
+        en_passant = parts[3]
+        if en_passant != '-':
+            file, rank = en_passant[0], en_passant[1]
+            self.en_passant_possible = (8 - int(rank), ord(file) - ord('a'))
+        else:
+            self.en_passant_possible = ()
+        self.halfmove_clock = int(parts[4])
+        self.fullmove_number = int(parts[5])
+
 
     def make_move(self, move):
 
