@@ -2,6 +2,7 @@ import pygame as p
 import chess_board
 import game_ui
 from load_sounds import load_sounds, play_sound
+from saltyy_bot import play_bot_move
 
 WIDTH = HEIGHT = 800
 FPS_MAX = 15
@@ -12,6 +13,10 @@ def main():
     clock = p.time.Clock()
     screen.fill(p.Color("grey"))
     gs = chess_board.GameState()
+
+    fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+    gs.setup_from_fen(fen) 
+
     valid_moves = gs.get_valid_moves()
     move_made = False
     game_ui.load_images()
