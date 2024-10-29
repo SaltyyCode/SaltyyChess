@@ -22,6 +22,8 @@ class GameState:
         self.castling_rights = CastlingRights(True, True, True, True)
         self.castling_rights_log = [CastlingRights(self.castling_rights.wks, self.castling_rights.bks,
                                                    self.castling_rights.wqs, self.castling_rights.bqs)]
+        self.MoveHistory = {}
+        self.MoveCount = 0
 
     def make_move(self, move):
 
@@ -53,7 +55,20 @@ class GameState:
         self.update_castling_rights(move)
         self.castling_rights_log.append(CastlingRights(self.castling_rights.wks, self.castling_rights.bks,
                                                        self.castling_rights.wqs, self.castling_rights.bqs))
+        posKey = self.getPosKey()
+        if posKey in self.MoveHistory:
+                self.MoveHistory[posKey] += 1
+        else:
+                self.MoveHistory[posKey] = 1
+            
+        if move.piece_moved[1] == 'P' or move.piece_captured != '--':  # Vérifie si le coup implique un pion ou une capture
+            self.MoveCount = 0 
+        else:
+            self.MoveCount += 1
+            if self.MoveCount == 100:  # Si les deux joueurs jouent 50 coups sans capture ou mouvement de pion
+                self.stalemate = True  # Match nul selon la règle des 50 coups
 
+            
     def undo_move(self):
 
         if len(self.move_log) != 0:
@@ -111,9 +126,21 @@ class GameState:
         else:
             self.checkmate = False
             self.stalemate = False
+        
+        posKey = self.getPosKey()
+        if self.MoveHistory.get(posKey, 0) >= 6: # Check the string to see if the current pos already occured
+            self.stalemate = True
+            print("stalemate with repetition")
+        else:
+            self.stalemate = False
         self.en_passant_possible = temp_en_passant_possible
         self.castling_rights = temp_castling_rights
         return moves
+
+    def getPosKey(self):
+        
+        posKey = ''.join([''.join(row) for row in self.board]) # Converts the 2D list representation of a chess board into a single string
+        return posKey
 
     def in_check(self):
 
