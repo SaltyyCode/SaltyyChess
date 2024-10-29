@@ -14,6 +14,7 @@ My Chess Board actually handles : - All legals moves
                                   - 3 Moves repetition draw
                                   - Castling
                                   - En-passant
+                                  - Forsyth–Edwards Notation
 
 
 ## Installation
