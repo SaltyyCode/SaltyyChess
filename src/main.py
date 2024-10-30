@@ -1,8 +1,9 @@
 import pygame as p
 import chess_board
 import game_ui
+from bots.random import play_bot_move
 from load_sounds import load_sounds, play_sound
-#from saltyy_bot import play_bot_move
+
 
 WIDTH = HEIGHT = 800
 FPS_MAX = 15
@@ -45,7 +46,7 @@ def main():
                     move = chess_board.Move(player_clicks[0], player_clicks[1], gs.board)
                     for i in range(len(valid_moves)):
                         if move == valid_moves[i]:
-                            gs.make_move(valid_moves[i])
+                            gs.make_move(valid_moves[i], is_final_move=True)
                             move_made = True
                             selected_square = ()
                             player_clicks = []
@@ -80,6 +81,10 @@ def main():
             elif not game_over and gs.in_check() and not in_check_status:
                 play_sound(sounds, "check")
                 in_check_status = True
+
+        if not gs.white_to_move and not move_made: #Delete this bloc to play against human
+            play_bot_move(gs)
+            move_made = True
 
         if move_made:
             valid_moves = gs.get_valid_moves()
